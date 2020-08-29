@@ -1,8 +1,9 @@
-name: Build and test
+name: Build, test & deploy
 
-on: 
+on:
   push:
-    master
+    branches: [master]
+
 jobs:
   Build:
     runs-on: ubuntu-latest
