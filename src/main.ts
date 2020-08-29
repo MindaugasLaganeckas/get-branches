@@ -27,7 +27,8 @@ async function getDefaultBranch(inputs: Inputs): Promise<void> {
     });
     defaultBranch = repository.data.default_branch;
   }
-  
+
+  core.info(`Default branch: ${inspect(defaultBranch)}`);
   core.startGroup('Setting outputs')
   core.setOutput('default-branch', defaultBranch)
   core.exportVariable('DEFAULT_BRANCH', defaultBranch)

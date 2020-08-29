@@ -1474,7 +1474,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDefaultBranch = void 0;
 const core = __importStar(__webpack_require__(186));
 const github = __importStar(__webpack_require__(438));
 const util_1 = __webpack_require__(669);
@@ -1487,31 +1486,34 @@ function getDefaultBranch(inputs) {
             owner,
             repo,
         });
-        if (branchesResponse.data.length == 0) {
-            return "";
+        core.info(`Number of branches found: ${util_1.inspect(branchesResponse.data.length)}`);
+        var defaultBranch = "";
+        if (branchesResponse.data.length != 0) {
+            const repository = yield octokit.repos.get({
+                owner,
+                repo,
+            });
+            defaultBranch = repository.data.default_branch;
         }
-        const repository = yield octokit.repos.get({
-            owner,
-            repo,
-        });
-        return repository.data.default_branch;
+        core.startGroup('Setting outputs');
+        core.setOutput('default-branch', defaultBranch);
+        core.exportVariable('DEFAULT_BRANCH', defaultBranch);
+        core.endGroup();
     });
 }
-exports.getDefaultBranch = getDefaultBranch;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const inputs = {
                 token: core.getInput("token"),
-                path: core.getInput("path"),
+                path: core.getInput("path")
             };
             core.debug(`Inputs: ${util_1.inspect(inputs)}`);
-            return yield getDefaultBranch(inputs);
+            yield getDefaultBranch(inputs);
         }
         catch (error) {
             core.setFailed(error.message);
         }
-        return "";
     });
 }
 run();
