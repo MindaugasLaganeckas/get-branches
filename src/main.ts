@@ -7,7 +7,7 @@ export interface Inputs {
   path: string;
 }
 
-export async function getDefaultBranch(inputs: Inputs): Promise<string> {
+async function getDefaultBranch(inputs: Inputs): Promise<void> {
   // Get the repository path
   const [owner, repo] = inputs.path.split("/");
 
@@ -18,31 +18,34 @@ export async function getDefaultBranch(inputs: Inputs): Promise<string> {
     repo,
   });
 
-  if (branchesResponse.data.length == 0) {
-    return "";
+  core.info(`Number of branches found: ${inspect(branchesResponse.data.length)}`);
+  var defaultBranch = "";
+  if (branchesResponse.data.length != 0) {
+    const repository = await octokit.repos.get({
+      owner,
+      repo,
+    });
+    defaultBranch = repository.data.default_branch;
   }
-
-  const repository = await octokit.repos.get({
-    owner,
-    repo,
-  });
-
-  return repository.data.default_branch;
+  
+  core.startGroup('Setting outputs')
+  core.setOutput('default-branch', defaultBranch)
+  core.exportVariable('DEFAULT_BRANCH', defaultBranch)
+  core.endGroup()
 }
 
-async function run(): Promise<string> {
+async function run(): Promise<void> {
   try {
     const inputs: Inputs = {
       token: core.getInput("token"),
-      path: core.getInput("path"),
+      path: core.getInput("path")
     };
     core.debug(`Inputs: ${inspect(inputs)}`);
 
-    return await getDefaultBranch(inputs);
+    await getDefaultBranch(inputs);
   } catch (error) {
     core.setFailed(error.message);
   }
-  return "";
 }
 
 run();

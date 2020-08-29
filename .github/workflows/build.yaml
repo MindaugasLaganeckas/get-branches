@@ -17,7 +17,11 @@ jobs:
         yarn
         yarn build
     - name: Get default branch name
-      run: echo ./dist/index.js ${{secrets.GITHUB_TOKEN}} "MindaugasLaganeckas/get-default-branch"
+      id: defaultBranchName
+      run: ./dist/index.js ${{secrets.GITHUB_TOKEN}} "MindaugasLaganeckas/get-default-branch"
+    - name: Test
+      if: ${{ steps.defaultBranchName.outputs.default-branch != 'master' }}
+      run: exit 1
     - uses: actions/upload-artifact@v2
       with:
         name: dist
