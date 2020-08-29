@@ -1495,6 +1495,7 @@ function getDefaultBranch(inputs) {
             });
             defaultBranch = repository.data.default_branch;
         }
+        core.info(`Default branch: ${util_1.inspect(defaultBranch)}`);
         core.startGroup('Setting outputs');
         core.setOutput('default-branch', defaultBranch);
         core.exportVariable('DEFAULT_BRANCH', defaultBranch);
