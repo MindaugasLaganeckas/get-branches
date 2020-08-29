@@ -1,0 +1,14 @@
+name: 'Get default branch'
+description: 'Get the default branch'
+inputs:
+  token:
+    description: 'GITHUB_TOKEN or a `repo` scoped Personal Access Token (PAT)'
+    default: ${{ github.token }}
+  path:
+    description: 'owner/repository'
+outputs:
+  default-branch:
+    description: 'Default branch name or empty string if there are no branches'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

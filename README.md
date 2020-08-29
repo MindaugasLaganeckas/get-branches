@@ -1,2 +1,2 @@
-# get-branches
-Get the list of branches and which of them is the default
+# get-default-branch
+Get the default branch or an empty string, if there are no branches in the repository
